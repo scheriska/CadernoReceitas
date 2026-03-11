@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "M0TygybogMs=",
+  "dgSpecHash": "3tztYjRaHmQ=",
   "success": true,
-  "projectFilePath": "/home/cheriska/Área de Trabalho/Projetos/CadernoReceitas/SocialCook/SocialCook.csproj",
+  "projectFilePath": "/home/cheriska/Área de Trabalho/Projetos/CadernoReceitas/backend/SocialCook/SocialCook.csproj",
   "expectedPackageFiles": [
     "/home/cheriska/.nuget/packages/microsoft.aspnetcore.openapi/8.0.24/microsoft.aspnetcore.openapi.8.0.24.nupkg.sha512",
     "/home/cheriska/.nuget/packages/microsoft.entityframeworkcore/9.0.0/microsoft.entityframeworkcore.9.0.0.nupkg.sha512",

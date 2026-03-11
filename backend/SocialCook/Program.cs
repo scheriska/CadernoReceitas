@@ -1,5 +1,11 @@
 var builder = WebApplication.CreateBuilder(args);
 
+// Explicitly configure Kestrel to listen on port 8080
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(8081);
+});
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -8,18 +14,21 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
-app.UseHttpsRedirection();
+// Removed HTTPS redirection middleware to avoid issues with HTTPS port configuration
+// app.UseHttpsRedirection();
 
 var summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
+
+
 
 app.MapGet("/weatherforecast", () =>
 {
@@ -38,7 +47,10 @@ app.MapGet("/weatherforecast", () =>
 
 app.Run();
 
+
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
+
+
