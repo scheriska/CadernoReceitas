@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SocialCook")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bd3a0f88116fc66eabe31b5bf30a9ee42ba3312a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a178228f22a5ab09581e30d585940730b8e12860")]
 [assembly: System.Reflection.AssemblyProductAttribute("SocialCook")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SocialCook")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

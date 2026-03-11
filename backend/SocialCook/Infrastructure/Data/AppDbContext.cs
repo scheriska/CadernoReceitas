@@ -22,5 +22,20 @@ namespace SocialCook.Infrastructure.Data
         public DbSet<RecipeCategory> RecipeCategories => Set<RecipeCategory>();
         public DbSet<Beverage> Beverages => Set<Beverage>();
         public DbSet<RecipeBeverage> RecipeBeverages => Set<RecipeBeverage>();
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<RecipeCategory>()
+                .HasKey(rc => new { rc.RecipeId, rc.CategoryId });
+            modelBuilder.Entity<RecipeImage>()
+                .HasKey(ri => new { ri.RecipeId, ri.Id });
+            modelBuilder.Entity<RecipeIngredient>()
+                .HasKey(ri => new { ri.RecipeId, ri.IngredientId });
+            modelBuilder.Entity<RecipeBeverage>()
+                .HasKey(rb => new { rb.RecipeId, rb.BeverageId });
+        }
     }
 }
