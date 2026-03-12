@@ -1,3 +1,6 @@
+using SocialCook.Aplication.DTOs;
+using SocialCook.Aplication.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Explicitly configure Kestrel to listen on port 8080
@@ -10,6 +13,7 @@ builder.WebHost.ConfigureKestrel(options =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<UserService>();
 
 var app = builder.Build();
 
@@ -43,6 +47,14 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 })
 .WithName("GetWeatherForecast")
+.WithOpenApi();
+
+app.MapPost("/api/users/register", async (RegisterUserRequest request, UserService userService) =>
+{
+    var user = await userService.RegisterUserAsync(request);
+    return Results.Ok(user);
+})
+.WithName("RegisterUser")
 .WithOpenApi();
 
 app.Run();

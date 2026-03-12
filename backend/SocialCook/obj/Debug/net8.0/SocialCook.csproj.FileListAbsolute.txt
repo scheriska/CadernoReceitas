@@ -96,3 +96,4 @@
 /home/cheriska/Área de Trabalho/Projetos/CadernoReceitas/backend/SocialCook/obj/Debug/net8.0/SocialCook.pdb
 /home/cheriska/Área de Trabalho/Projetos/CadernoReceitas/backend/SocialCook/obj/Debug/net8.0/SocialCook.genruntimeconfig.cache
 /home/cheriska/Área de Trabalho/Projetos/CadernoReceitas/backend/SocialCook/obj/Debug/net8.0/ref/SocialCook.dll
+/home/cheriska/Área de Trabalho/Projetos/CadernoReceitas/backend/SocialCook/bin/Debug/net8.0/BCrypt.Net-Next.dll
