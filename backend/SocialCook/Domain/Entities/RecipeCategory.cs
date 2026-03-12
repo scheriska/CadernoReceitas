@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SocialCook.Domain.Common;
 
 namespace SocialCook.Domain.Entities
 {
-    public class RecipeCategory
+    public class RecipeCategory : BaseEntity
     {
         public Guid RecipeId { get; private set; }
         public Guid CategoryId { get; private set; }

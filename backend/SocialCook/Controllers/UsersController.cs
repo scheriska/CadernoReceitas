@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SocialCook.Aplication.DTOs;
+using SocialCook.Aplication.DTOs.Users;
 using SocialCook.Aplication.Services;
 
 namespace SocialCook.Controllers
@@ -24,6 +20,15 @@ namespace SocialCook.Controllers
         {
             var user = await _userService.RegisterUserAsync(request);
             return Ok(user);
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginUserRequest request)
+        {
+            var result = await _userService.Login(request);
+            if (result == null)
+                return Unauthorized(new { message = "Invalid email or password" });
+            return Ok();
         }
     }
 }

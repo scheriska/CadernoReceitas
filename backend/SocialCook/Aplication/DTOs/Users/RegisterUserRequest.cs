@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SocialCook.Domain.Emun;
 
-namespace SocialCook.Aplication.DTOs
+namespace SocialCook.Aplication.DTOs.Users
 {
     public class RegisterUserRequest
     {
