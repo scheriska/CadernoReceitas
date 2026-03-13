@@ -1,7 +1,13 @@
-using Microsoft.EntityFrameworkCore;
+using SocialCook.Aplication.DTOs.Users;
+using SocialCook.Aplication.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using SocialCook.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new Exception("JWT Key not configured");
 
 // Explicitly configure Kestrel to listen on port 8080
 builder.WebHost.ConfigureKestrel(options =>
@@ -9,24 +15,57 @@ builder.WebHost.ConfigureKestrel(options =>
     options.ListenAnyIP(8081);
 });
 
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
+//builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
+builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<UserService>();
 
-    builder.Services.AddDbContext<AppDbContext>(options =>
+builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
-        new MySqlServerVersion(new Version(8,0,36))
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
     ));
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+    };
+});
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
+    app.UseDeveloperExceptionPage();
+    
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    app.UseAuthentication();
+    app.UseAuthorization();
 //}
 
 // Removed HTTPS redirection middleware to avoid issues with HTTPS port configuration
@@ -52,6 +91,24 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 })
 .WithName("GetWeatherForecast")
+.WithOpenApi();
+
+app.MapPost("/api/users/register", async (RegisterUserRequest request, UserService userService) =>
+{
+    var user = await userService.RegisterUserAsync(request);
+    return Results.Ok(user);
+})
+.WithName("RegisterUser")
+.WithOpenApi();
+
+app.MapPost("/api/users/login", async (LoginUserRequest request, UserService userService) =>
+{
+    var result = await userService.Login(request);
+    if (result == null)
+        return Results.Unauthorized();
+    return Results.Ok(result);
+})
+.WithName("LoginUser")
 .WithOpenApi();
 
 app.Run();

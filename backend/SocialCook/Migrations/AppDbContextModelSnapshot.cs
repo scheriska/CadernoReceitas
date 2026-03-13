@@ -133,26 +133,30 @@ namespace SocialCook.Migrations
 
             modelBuilder.Entity("SocialCook.Domain.Entities.RecipeBeverage", b =>
                 {
-                    b.Property<Guid>("RecipeId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
                     b.Property<Guid>("BeverageId")
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid>("Id")
-                        .HasColumnType("char(36)");
-
                     b.Property<string>("Notes")
                         .HasColumnType("longtext");
 
-                    b.HasKey("RecipeId", "BeverageId");
+                    b.Property<Guid>("RecipeId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipeId");
 
                     b.ToTable("RecipeBeverages");
                 });
 
             modelBuilder.Entity("SocialCook.Domain.Entities.RecipeCategory", b =>
                 {
-                    b.Property<Guid>("RecipeId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
                     b.Property<Guid>("CategoryId")
@@ -161,51 +165,62 @@ namespace SocialCook.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.HasKey("RecipeId", "CategoryId");
+                    b.Property<Guid>("RecipeId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipeId");
 
                     b.ToTable("RecipeCategories");
                 });
 
             modelBuilder.Entity("SocialCook.Domain.Entities.RecipeImage", b =>
                 {
-                    b.Property<Guid>("RecipeId")
-                        .HasColumnType("char(36)");
-
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
                     b.Property<int>("Order")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("RecipeId")
+                        .HasColumnType("char(36)");
+
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("RecipeId", "Id");
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipeId");
 
                     b.ToTable("RecipeImages");
                 });
 
             modelBuilder.Entity("SocialCook.Domain.Entities.RecipeIngredient", b =>
                 {
-                    b.Property<Guid>("RecipeId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
                     b.Property<Guid>("IngredientId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("Id")
                         .HasColumnType("char(36)");
 
                     b.Property<string>("Quantity")
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<Guid>("RecipeId")
+                        .HasColumnType("char(36)");
+
                     b.Property<string>("Unit")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.HasKey("RecipeId", "IngredientId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipeId");
 
                     b.ToTable("RecipeIngredients");
                 });
