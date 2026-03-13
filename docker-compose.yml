@@ -1,0 +1,48 @@
+version: '3.9'
+
+networks:
+  app_network:
+    driver: bridge
+
+services:
+
+  mysql:
+    image: mysql:8.0
+    container_name: cook_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: cook_db
+      MYSQL_USER: cook_user
+      MYSQL_PASSWORD: cook_pass
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app_network
+
+  backend:
+    build: ./backend
+    container_name: cook_backend
+    depends_on:
+      - mysql
+    ports:
+      - "8081:8081"
+    command: dotnet watch run --urls=http://0.0.0.0:8081
+    environment:
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+      ConnectionStrings__DefaultConnection: "server=mysql;port=3306;database=cook_db;user=cook_user;password=cook_pass"
+    networks:
+      - app_network
+
+#  frontend:
+#    build: ./frontend
+#    container_name: cook_frontend
+#    depends_on:
+#      - backend
+#    ports:
+#      - "3000:3000"
+
+volumes:
+  mysql_data:

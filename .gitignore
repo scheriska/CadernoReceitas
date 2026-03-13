@@ -1,0 +1,33 @@
+# Build
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.rsuser
+
+# Logs
+*.log
+
+# VS Code
+.vscode/
+
+# Rider
+.idea/
+
+# Nuget
+*.nupkg
+packages/
+
+# Cache
+*.cache
+*.pdb
+
+# Resharper
+_ReSharper.Caches/
+
+# OS
+.DS_Store
+Thumbs.db
