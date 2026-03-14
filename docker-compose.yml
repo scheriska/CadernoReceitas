@@ -23,15 +23,25 @@ services:
       - app_network
 
   backend:
-    build: ./backend
+  #  build: ./backend
+    image: mcr.microsoft.com/dotnet/sdk:8.0
     container_name: cook_backend
+    user: root
+    working_dir: /app/SocialCook
+    volumes:
+      - ./backend:/app
     depends_on:
       - mysql
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
     ports:
       - "8081:8081"
     command: dotnet watch run --urls=http://0.0.0.0:8081
     environment:
       DOTNET_USE_POLLING_FILE_WATCHER: "true"
+      ASPNETCORE_ENVIRONMENT: "Development"
       ConnectionStrings__DefaultConnection: "server=mysql;port=3306;database=cook_db;user=cook_user;password=cook_pass"
     networks:
       - app_network
