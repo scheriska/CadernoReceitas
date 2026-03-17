@@ -29,7 +29,7 @@ namespace SocialCook.Controllers
             var result = await _userService.Login(request);
             if (result == null)
                 return Unauthorized(new { message = "Invalid email or password" });
-            return Ok();
+            return Ok(result);
         }
         
     }

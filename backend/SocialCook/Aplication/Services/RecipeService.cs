@@ -46,6 +46,36 @@ namespace SocialCook.Aplication.Services
             return RecipeMapper.ToRecipeResponse(recipe);
         }
 
+        public async Task<bool> AddImageAsync(Guid recipeId, IFormFile file)
+        {
+            var recipe = await _context.Recipes.FindAsync(recipeId);
+            
+            if (recipe == null || recipe.OwnerId != _currentUserService.UserId)
+            {
+                return false;
+            }
+
+            var filename = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+            var folderPath = Path.Combine("wwwroot/images");
+
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            var filePAth = Path.Combine(folderPath, filename);
+            using (var stream = new FileStream(filePAth, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            var imageUrl = $"/images/{filename}";
+            var image = new RecipeImage(recipeId, imageUrl, 0);
+            _context.RecipeImages.Add(image);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<RecipeResponse?> GetRecipeByIdAsync(Guid id)
         {
             var recipe = await _context.Recipes
