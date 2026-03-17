@@ -12,7 +12,9 @@ namespace SocialCook.Domain.Entities
         public Guid IngredientId { get; private set; }
         public string Quantity { get; private set; }
         public string Unit { get; private set; }
+
         //navegation properties
+        public Recipe Recipe { get; set; }
         public Ingredient Ingredient { get; set; }
 
         private RecipeIngredient() { }

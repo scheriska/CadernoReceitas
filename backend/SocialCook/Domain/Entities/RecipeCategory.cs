@@ -12,6 +12,10 @@ namespace SocialCook.Domain.Entities
         public Guid CategoryId { get; private set; }
         public DateTime CreatedAt { get; private set; }
 
+        //navegation properties
+        public Recipe Recipe { get; set; }
+        public Category Category { get; set; }
+
         private RecipeCategory() { }
 
         public RecipeCategory(Guid recipeId, Guid categoryId)

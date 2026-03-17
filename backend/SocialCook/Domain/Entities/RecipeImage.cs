@@ -12,6 +12,9 @@ namespace SocialCook.Domain.Entities
         public string Url { get; private set; }
         public int Order { get; private set; }
 
+        //navegation properties
+        public Recipe Recipe { get; set; }
+
         private RecipeImage() { }
 
         public RecipeImage(Guid recipeId, string url, int order)

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SocialCook.Aplication.DTOs.Recipes
 {
@@ -14,8 +10,16 @@ namespace SocialCook.Aplication.DTOs.Recipes
         public string Description { get; set; }
 
         public string PreparationMethod { get; set; }
+        public string Status { get; set; }
+        public string Visibility { get; set; } 
+        public DateTime CreatedAt { get; set; }
+
 
         public List<RecipeIngredientResponse> Ingredients { get; set; }
+
+        public List<RecipeImageResponse> Images { get; set; }
+        public List<RecipeCategoryResponse> Categories { get; set; }
+        public List<RecipeBeverageResponse> Beverages { get; set; }
     }
 
     public class RecipeIngredientResponse
@@ -25,5 +29,22 @@ namespace SocialCook.Aplication.DTOs.Recipes
         public string Quantity { get; set; }
 
         public string Unit { get; set; }
+    }
+
+    public class RecipeImageResponse
+    {
+        public string Url { get; set; }
+        public int Order { get; set; }
+    }
+
+    public class RecipeCategoryResponse
+    {
+        public string Name { get; set; }
+    }
+
+    public class RecipeBeverageResponse
+    {
+        public string Name { get; set; }
+        public string Note { get; set; }
     }
 }

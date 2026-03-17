@@ -12,6 +12,11 @@ namespace SocialCook.Domain.Entities
         public Guid BeverageId { get; private set; }
         public string? Notes { get; private set; }
 
+        //navegation properties
+        public Recipe Recipe { get; set; }
+        public Beverage Beverage { get; set; }
+        
+
         private RecipeBeverage() { }
 
         public RecipeBeverage(Guid recipeId, Guid beverageId, string? notes)

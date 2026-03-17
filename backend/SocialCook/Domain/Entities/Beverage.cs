@@ -14,6 +14,10 @@ namespace SocialCook.Domain.Entities
         public string Description { get; private set; }
         public DateTime CreatedAt { get; private set; }
 
+        //navegation inversa
+        public List<RecipeBeverage> RecipeBeverages { get; set; }
+        
+
         private Beverage() { }
 
         public Beverage(string name, BeverageType type, string description)
