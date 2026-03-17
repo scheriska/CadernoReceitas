@@ -14,10 +14,12 @@ namespace SocialCook.Controllers
     public class RecipeController : ControllerBase
     {
         private readonly RecipeService _recipeService;
+        private readonly CurrentUserService _currentUserService;
 
-        public RecipeController(RecipeService recipeService)
+        public RecipeController(RecipeService recipeService, CurrentUserService currentUserService)
         {
             _recipeService = recipeService;
+            _currentUserService = currentUserService;
         }
 
         [Authorize]
@@ -28,5 +30,44 @@ namespace SocialCook.Controllers
             return Ok(recipe);
         }
 
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetRecipe([FromRoute] Guid id)
+        {
+            var recipe = await _recipeService.GetRecipeByIdAsync(id);
+            if (recipe == null)
+            {
+                return NotFound();
+            }
+            return Ok(recipe);
+        }
+
+        [Authorize]
+        [HttpPut("{id}/publish")]
+        public async Task<IActionResult> PublishRecipe([FromRoute] Guid id)
+        {
+            var success = await _recipeService.PublishAsync(id, _currentUserService.UserId);
+
+            if (!success)
+                return Forbid();
+
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpGet("feed")]
+        public async Task<IActionResult> GetFeed([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        {
+            var recipes = await _recipeService.GetFeedAsync(page, pageSize);
+            return Ok(recipes);
+        }
+        
+        [Authorize]
+        [HttpGet("{id}/recipes")]
+        public async Task<IActionResult> GetUserRecipes([FromRoute] Guid id)
+        {
+            var recipes = await _recipeService.GetUserRecipesAsync(id);
+            return Ok(recipes);
+        }
     }
 }

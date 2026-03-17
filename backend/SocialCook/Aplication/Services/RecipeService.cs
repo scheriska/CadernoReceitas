@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SocialCook.Aplication.DTOs.Recipes;
+using SocialCook.Domain.Emun;
 using SocialCook.Domain.Entities;
 using SocialCook.Infrastructure.Data;
 
@@ -42,6 +43,64 @@ namespace SocialCook.Aplication.Services
             await _context.SaveChangesAsync();
 
             return recipe;
+        }
+
+        public async Task<RecipeResponse?> GetRecipeByIdAsync(Guid id)
+        {
+            var recipe = await _context.Recipes
+                .Include(r => r.Ingredients)
+                    .ThenInclude(ri => ri.Ingredient)
+                .FirstOrDefaultAsync(r => r.Id == id);
+                
+            if (recipe == null)
+                return null;
+
+            return new RecipeResponse
+            {
+                Id = recipe.Id,
+                Title = recipe.Title,
+                Description = recipe.Description,
+                PreparationMethod = recipe.PreparationMethod,
+                Ingredients = recipe.Ingredients.Select(ri => new RecipeIngredientResponse
+                {
+                    Name = ri.Ingredient.Name,
+                    Quantity = ri.Quantity,
+                    Unit = ri.Unit
+                }).ToList()
+            };
+        }
+
+        public async Task<bool> PublishAsync(Guid id, Guid userId)
+        {
+            var recipe = await _context.Recipes.FindAsync(id);
+            
+            if (recipe == null || recipe.OwnerId != userId)
+            {
+                return false;
+            }
+
+            recipe.Publish();
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<List<Recipe>> GetFeedAsync(int page, int pageSize)
+        {
+            return await _context.Recipes
+                .Where(r => r.Visibility == RecipeVisibility.Public && r.Status == RecipeStatus.Published)
+                .OrderByDescending(r => r.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public async Task<List<Recipe>> GetUserRecipesAsync(Guid userId)
+        {
+            return await _context.Recipes
+                .Where(r => r.OwnerId == userId)
+                .OrderByDescending(r => r.CreatedAt)
+                .ToListAsync();
         }
     }
 }

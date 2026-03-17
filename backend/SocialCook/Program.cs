@@ -9,7 +9,6 @@ using SocialCook.Aplication.DTOs.Recipes;
 using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
-var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new Exception("JWT Key not configured");
 
 // Explicitly configure Kestrel to listen on port 8080
 builder.WebHost.ConfigureKestrel(options =>
@@ -17,10 +16,17 @@ builder.WebHost.ConfigureKestrel(options =>
     options.ListenAnyIP(8081);
 });
 
+// ======================
+// 🔐 JWT CONFIG
+// ======================
+var jwtKey = builder.Configuration["Jwt:Key"]
+    ?? throw new Exception("JWT Key not configured");
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-//builder.Services.AddEndpointsApiExplorer();
+// ======================
+// 🧱 SERVICES
+// ======================
+
+//Swagger
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
@@ -47,18 +53,28 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+
+//Controllers
 builder.Services.AddControllers();
+
+//Services
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<UserService>();
-builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<CurrentUserService>();
 builder.Services.AddScoped<RecipeService>();
 
+//DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
     ));
+
+builder.Services.AddHttpContextAccessor();
+
+// ======================
+// 🔐 AUTHENTICATION
+// ======================
 
 builder.Services.AddAuthentication(options =>
 {
@@ -84,79 +100,29 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// ======================
+// 🚀 BUILD APP
+// ======================
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-    app.UseDeveloperExceptionPage();
-    
-    app.UseSwagger();
-    app.UseSwaggerUI();
+// ======================
+// 🧪 MIDDLEWARE
+// ======================
 
-    app.UseAuthentication();
-    app.UseAuthorization();
-//}
+app.UseDeveloperExceptionPage();
 
-// Removed HTTPS redirection middleware to avoid issues with HTTPS port configuration
-// app.UseHttpsRedirection();
+app.UseSwagger();
+app.UseSwaggerUI();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+app.UseAuthentication();
+app.UseAuthorization();
 
+// Mapeia controllers
+app.MapControllers();
 
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
-
-app.MapPost("/api/users/register", async (RegisterUserRequest request, UserService userService) =>
-{
-    var user = await userService.RegisterUserAsync(request);
-    return Results.Ok(user);
-})
-.WithName("RegisterUser")
-.WithOpenApi();
-
-app.MapPost("/api/users/login", async (LoginUserRequest request, UserService userService) =>
-{
-    var result = await userService.Login(request);
-    if (result == null)
-        return Results.Unauthorized();
-    return Results.Ok(result);
-})
-.WithName("LoginUser")
-.WithOpenApi();
-
-
-app.MapPost("/api/recipes/create", [Authorize] async ( CreateRecipeRequest request, RecipeService recipeService) =>
-{
-    var recipe = await recipeService.CreateRecipeAsync(request);
-
-    return Results.Ok(recipe);
-})
-.WithName("CreateRecipe")
-.WithOpenApi();
+// ======================
+// 🚀 RUN
+// ======================
 
 app.Run();
-
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
-
-
