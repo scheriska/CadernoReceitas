@@ -18,6 +18,7 @@ namespace SocialCook.Domain.Entities
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
 
+        //Relacionamentos
         private readonly List<RecipeIngredient> _ingredients = new();
         public IReadOnlyCollection<RecipeIngredient> Ingredients => _ingredients;
 

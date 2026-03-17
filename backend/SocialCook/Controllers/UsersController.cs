@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SocialCook.Aplication.DTOs.Users;
 using SocialCook.Aplication.Services;
@@ -30,5 +31,6 @@ namespace SocialCook.Controllers
                 return Unauthorized(new { message = "Invalid email or password" });
             return Ok();
         }
+        
     }
 }

@@ -1,4 +1,5 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+RUN apt-get update && apt-get install -y bash curl
 WORKDIR /src
 
 COPY *.sln .
@@ -16,6 +17,8 @@ WORKDIR /app
 
 COPY --from=build /app/publish .
 
+
+
 EXPOSE 8081
 
-ENTRYPOINT ["dotnet", "SocialCook.dll"]
+ENTRYPOINT ["dotnet", "watch", "run",  "SocialCook.dll"]

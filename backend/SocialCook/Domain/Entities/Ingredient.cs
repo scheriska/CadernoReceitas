@@ -12,6 +12,9 @@ namespace SocialCook.Domain.Entities
         public string NormalizeName { get; private set; }
         public DateTime CreatedAt { get; set; }
 
+        //navegacao inversa
+        public List<RecipeIngredient> RecipeIngredients { get; set; }
+
         private Ingredient() { }
 
         public Ingredient(string name)

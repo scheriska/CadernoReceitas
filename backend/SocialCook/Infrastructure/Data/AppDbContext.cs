@@ -29,11 +29,17 @@ namespace SocialCook.Infrastructure.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<RecipeCategory>()
-                .HasKey(rc => new { rc.RecipeId, rc.CategoryId });
+                .HasIndex(rc => new { rc.RecipeId, rc.CategoryId })
+                .IsUnique();
             modelBuilder.Entity<RecipeImage>()
                 .HasKey(ri => new { ri.RecipeId, ri.Id });
             modelBuilder.Entity<RecipeIngredient>()
-                .HasKey(ri => new { ri.RecipeId, ri.IngredientId });
+                .HasOne(ri => ri.Ingredient)
+                .WithMany(i => i.RecipeIngredients)
+                .HasForeignKey(ri => ri.IngredientId);
+            modelBuilder.Entity<RecipeIngredient>()
+                .HasIndex(ri => new { ri.RecipeId, ri.IngredientId })
+                .IsUnique();
             modelBuilder.Entity<RecipeBeverage>()
                 .HasKey(rb => new { rb.RecipeId, rb.BeverageId });
         }
