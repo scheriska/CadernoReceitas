@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SocialCook.Aplication.DTOs;
 using SocialCook.Aplication.DTOs.Recipes;
 using SocialCook.Aplication.Services;
 
@@ -68,6 +69,23 @@ namespace SocialCook.Controllers
         {
             var recipes = await _recipeService.GetUserRecipesAsync(id);
             return Ok(recipes);
+        }
+
+        [Authorize]
+        [HttpPost("{id}/images")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> AddImage([FromRoute] Guid id, [FromForm] AddImageRequest request)
+        {
+            var file = request.File;
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded.");
+            
+            var success = await _recipeService.AddImageAsync(id, file);
+
+            if (!success)
+                return Forbid();
+
+            return Ok(new { Message = "Image uploaded successfully." });
         }
     }
 }

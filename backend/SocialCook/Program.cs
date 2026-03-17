@@ -121,6 +121,8 @@ app.UseAuthorization();
 // Mapeia controllers
 app.MapControllers();
 
+app.UseStaticFiles();
+
 // ======================
 // 🚀 RUN
 // ======================
